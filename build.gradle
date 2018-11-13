@@ -1,0 +1,21 @@
+plugins {
+    id 'groovy'
+}
+
+group 'groovy-closure-owner-delegate-this'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            'org.codehaus.groovy:groovy-all:2.4.4',
+            'com.google.guava:guava:24.0-jre'
+    )
+    testCompile(
+            'org.codehaus.groovy:groovy-all:2.4.4',
+            'org.spockframework:spock-core:1.0-groovy-2.4'
+    )
+}
