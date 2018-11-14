@@ -21,7 +21,8 @@ variety of advantages which are described in this chapter.
 A closure definition follows this syntax:
 
 `{ [closureParameters -> ] statements }`
-Where [closureParameters->] is an optional comma-delimited list of 
+
+Where `[closureParameters->]` is an optional comma-delimited list of 
 parameters, and statements are 0 or more Groovy statements.
 
 ## Groovy closures vs lambda expressions
