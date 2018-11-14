@@ -22,10 +22,10 @@ references and methods to the delegate only and entirely bypass
 the owner.
 
 * **TO_SELF** - the closure will resolve property references to 
-itself and go through the usual MetaClass look-up process. utils.This 
+itself and go through the usual MetaClass look-up process. This 
 means that properties and methods are neither resolved from the 
 owner nor the delegate, but only on the closure object itself. 
-utils.This allows the developer to override getProperty using 
+This allows the developer to override getProperty using 
 ExpandoMetaClass of the closure itself.
 
 * **Note that local variables are always looked up first, 
