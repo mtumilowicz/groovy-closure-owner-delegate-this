@@ -6,9 +6,23 @@ import spock.lang.Specification
  */
 class DelegateOwnerThisTest extends Specification {
 
-    def value = ""
+    def value = "fromDelegateOwnerThisTest"
 
-    def "changing owner, this, delegate"() {
+    def "resolving strategy: LOCAL VARIABLES FIRST -> owner -> delegate"() {
+        given:
+        def value = "this method"
+
+        def closure = {
+            methodFromDelegate(value)
+        }
+
+        def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
+
+        expect:
+        rehydratedClosure() == "this method"
+    }
+    
+    def "resolving strategy: local variables first -> OWNER -> delegate"() {
         given:
         def closure = {
             methodFromDelegate(value)
@@ -20,25 +34,27 @@ class DelegateOwnerThisTest extends Specification {
         rehydratedClosure() == "fromOwner"
     }
 
-    def "changing owner, this, delegate - value in the method scope"() {
+    def "resolving strategy: local variables first -> owner -> ?"() {
         given:
-        def value = "this method"
-        
         def closure = {
             methodFromDelegate(value)
         }
 
-        def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
-
+        def rehydratedClosure = closure.rehydrate(new Delegate(), new EmptyOwner(), new This())
+        
         expect:
-        rehydratedClosure() == "this method"
+        rehydratedClosure() == "fromDelegateOwnerThisTest"
     }
     
     class Delegate {
-        String field = "fromDelegate"
+        String value = "fromDelegate"
         
         String methodFromDelegate(String string) {
             string
+        }
+
+        String methodFromDelegate() {
+            value
         }
     }
     
@@ -48,5 +64,8 @@ class DelegateOwnerThisTest extends Specification {
 
     class Owner {
         String value = "fromOwner"
+    }
+
+    class EmptyOwner {
     }
 }
