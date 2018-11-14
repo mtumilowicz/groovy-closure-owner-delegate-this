@@ -29,7 +29,7 @@ class ThisTest extends Specification {
     class InnerClass {
         Closure inner = { this }
     }
-    
+
     def "closure enclosed in inner class"() {
         given:
         def innerClass = new InnerClass()
