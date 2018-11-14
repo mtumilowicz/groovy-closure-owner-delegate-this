@@ -6,9 +6,9 @@ import spock.lang.Specification
  */
 class DelegateOwnerThisTest extends Specification {
 
-    def value = "fromDelegateOwnerThisTest"
+//    def value = "fromDelegateOwnerThisTest"
 
-    def "resolving strategy: LOCAL VARIABLES FIRST -> owner -> delegate"() {
+    def "local variables first"() {
         given:
         def value = "this method"
 
@@ -22,28 +22,40 @@ class DelegateOwnerThisTest extends Specification {
         rehydratedClosure() == "this method"
     }
     
-    def "resolving strategy: local variables first -> OWNER -> delegate"() {
+    def "class This has field value"() {
         given:
         def closure = {
-            methodFromDelegate(value)
+            methodFromDelegate(this.value)
         }
 
         def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
         
         expect:
-        rehydratedClosure() == "fromOwner"
+        rehydratedClosure() == "fromThis"
     }
 
-    def "resolving strategy: local variables first -> owner -> ?"() {
+    def "class This does not have field value but Owner has"() {
         given:
         def closure = {
             methodFromDelegate(value)
         }
 
-        def rehydratedClosure = closure.rehydrate(new Delegate(), new EmptyOwner(), new This())
-        
+        def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new EmptyThis())
+
         expect:
-        rehydratedClosure() == "fromDelegateOwnerThisTest"
+        rehydratedClosure() == "fromOwner"
+    }
+
+    def "class This, Owner does not have field value"() {
+        given:
+        def closure = {
+            methodFromDelegate(value)
+        }
+
+        def rehydratedClosure = closure.rehydrate(new Delegate(), new EmptyOwner(), new EmptyThis())
+
+        expect:
+        rehydratedClosure() == "fromDelegate"
     }
     
     class Delegate {
@@ -51,10 +63,6 @@ class DelegateOwnerThisTest extends Specification {
         
         String methodFromDelegate(String string) {
             string
-        }
-
-        String methodFromDelegate() {
-            value
         }
     }
     
@@ -67,5 +75,8 @@ class DelegateOwnerThisTest extends Specification {
     }
 
     class EmptyOwner {
+    }
+
+    class EmptyThis {
     }
 }
