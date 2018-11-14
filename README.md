@@ -17,9 +17,6 @@ also contain free variables which are defined outside of its surrounding
 scope**. While breaking the formal concept of a closure, it offers a 
 variety of advantages which are described in this chapter.
 
-Note that local variables are always looked up first, independently of 
-the resolution strategy.
-
 ## syntax
 A closure definition follows this syntax:
 
@@ -139,8 +136,9 @@ By default, the delegate is set to `owner`.
 Tests are in `DelegateTest` and are similar to `OwnerTest`
 
 # mixing this-owner-delegate
-Tests are in `DelegateOwnerThisTest`. In general - we test order 
-and scope of loading values used in closures.
+Tests are in `DelegateOwnerThisTest`. 
+
+In general - we test order  and scope of loading values used in closures.
 
 We have couple of util classes (used during testing):
 ```
@@ -233,6 +231,9 @@ then `delegate` is resolved
 
 # resolving strategies
 ## summary
+**Note that local variables are always looked up first, 
+independently of the resolution strategy.**
+
 * **OWNER_FIRST** - the closure will attempt 
 to resolve property references and methods to the owner first, then 
 the delegate - **this is the default strategy**.
