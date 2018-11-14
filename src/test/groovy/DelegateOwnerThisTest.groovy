@@ -1,4 +1,5 @@
 import spock.lang.Specification
+import utils.*
 
 
 /**
@@ -10,25 +11,28 @@ class DelegateOwnerThisTest extends Specification {
         given:
         def value = "this method"
 
+        and:
         def closure = {
             methodFromDelegate(value)
         }
 
+        when:
         def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
 
-        expect:
+        then:
         rehydratedClosure() == "this method"
     }
-    
+
     def "class This has field value, and we use this.value -> get from This"() {
         given:
         def closure = {
             methodFromDelegate(this.value)
         }
 
+        when:
         def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
-        
-        expect:
+
+        then:
         rehydratedClosure() == "fromThis"
     }
 
@@ -38,9 +42,10 @@ class DelegateOwnerThisTest extends Specification {
             methodFromDelegate(value)
         }
 
+        when:
         def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
 
-        expect:
+        then:
         rehydratedClosure() == "fromOwner"
     }
 
@@ -50,34 +55,10 @@ class DelegateOwnerThisTest extends Specification {
             methodFromDelegate(value)
         }
 
+        when:
         def rehydratedClosure = closure.rehydrate(new Delegate(), new EmptyOwner(), new This())
 
-        expect:
+        then:
         rehydratedClosure() == "fromDelegate"
-    }
-    
-    class Delegate {
-        String value = "fromDelegate"
-        
-        String methodFromDelegate(String string) {
-            string
-        }
-    }
-    
-    class This {
-        String value = "fromThis"
-    }
-
-    class Owner {
-        String value = "fromOwner"
-    }
-
-    class EmptyOwner {
-    }
-
-    class EmptyDelegate {
-        String methodFromDelegate(String string) {
-            string
-        }
     }
 }
