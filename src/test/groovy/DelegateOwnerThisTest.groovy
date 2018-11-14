@@ -6,8 +6,6 @@ import spock.lang.Specification
  */
 class DelegateOwnerThisTest extends Specification {
 
-    def value = "fromDelegateOwnerThisTest"
-
     def "local variables first"() {
         given:
         def value = "this method"
@@ -56,18 +54,6 @@ class DelegateOwnerThisTest extends Specification {
 
         expect:
         rehydratedClosure() == "fromDelegate"
-    }
-
-    def "Owner, Delegate does not have field value -> class where closure is defined"() {
-        given:
-        def closure = {
-            methodFromDelegate(value)
-        }
-
-        def rehydratedClosure = closure.rehydrate(new EmptyDelegate(), new EmptyOwner(), new This())
-
-        expect:
-        rehydratedClosure() == "fromDelegateOwnerThisTest"
     }
     
     class Delegate {
