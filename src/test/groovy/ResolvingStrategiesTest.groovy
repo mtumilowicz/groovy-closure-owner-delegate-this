@@ -13,6 +13,7 @@ class ResolvingStrategiesTest extends Specification {
             methodFromDelegate(value)
         }
 
+        and:
         def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
         
         when:
@@ -28,6 +29,7 @@ class ResolvingStrategiesTest extends Specification {
             methodFromDelegate(value)
         }
 
+        and:
         def rehydratedClosure = closure.rehydrate(new Delegate(), new EmptyOwner(), new This())
         rehydratedClosure.resolveStrategy = Closure.OWNER_ONLY
         
@@ -42,10 +44,12 @@ class ResolvingStrategiesTest extends Specification {
         given:
         ExpandoMetaClass.enableGlobally()
         
+        and:
         def closure = {
             value
         }
         
+        and:
         closure.metaClass.value = "inClosure"
         
         when:
