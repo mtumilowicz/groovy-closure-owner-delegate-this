@@ -84,6 +84,53 @@ Tests are in `ThisTest`:
     innerClass.inner().getClass() == InnerClass.class 
     ```
 
+## owner
+The owner of a closure is very similar to the definition of this 
+in a closure with a subtle difference: **it will return the direct 
+enclosing object, be it a closure or a class**.
+
+* if the closure is defined in a inner class
+`owner` in the closure will return the inner class, not the top-level one
+* in case of nested closures `owner` corresponds to the enclosing 
+closure, hence a different object from `this`!
+
+Tests are in `OwnerTest`:
+* `owner` inside closure
+    ```
+    given:
+    Closure closure = { owner }
+    
+    expect:
+    closure() == this
+    closure().getClass() == OwnerTest.class
+    ```
+* `owner` inside closure inside closure
+    ```
+    given:
+    Closure closure = {
+        Closure inner = { owner }
+        return inner
+    }
+    
+    expect:
+    closure()() == closure
+    closure()().getClass() == closure.getClass()
+    ```
+* `owner` inside closure inside inner class
+    ```
+    class InnerClass {
+        Closure inner = { owner }
+    }    
+    ```
+    ```
+    given:
+    def innerClass = new InnerClass()
+    
+    expect:
+    innerClass.inner() == innerClass
+    innerClass.inner().getClass() == InnerClass.class
+    ```
+
 * **OWNER_FIRST** - the closure will attempt 
 to resolve property references and methods to the owner first, then 
 the delegate - **this is the default strategy**.
