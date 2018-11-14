@@ -131,6 +131,108 @@ Tests are in `OwnerTest`:
     innerClass.inner().getClass() == InnerClass.class
     ```
 
+## delegate
+While `closure-this` and `closure-owner` refer to the lexical scope of a 
+closure, the delegate is a user defined object that a closure will use. 
+By default, the delegate is set to `owner`.
+
+Tests are in `DelegateTest` and are similar to `OwnerTest`
+
+# mixing this-owner-delegate
+Tests are in `DelegateOwnerThisTest`. In general - we test order 
+and scope of loading values used in closures.
+
+We have couple of util classes (used during testing):
+```
+class Delegate {
+    String value = "fromDelegate"
+
+    String methodFromDelegate(String string) {
+        string
+    }
+}
+```
+```
+class Owner {
+    String value = "fromOwner"
+}
+```
+```
+class This {
+    String value = "fromThis"
+}
+```
+```
+class EmptyOwner {
+}
+```
+
+and we use rehydrate method from Closure class:
+> Returns a copy of this closure for which the delegate, owner and thisObject are
+replaced with the supplied parameters.
+```
+public Closure<V> rehydrate(Object delegate, Object owner, Object thisObject)
+```
+
+* local variables are used first
+    ```
+    given:
+    def value = "this method"
+    
+    and:
+    def closure = {
+        methodFromDelegate(value)
+    }
+    
+    when:
+    def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
+    
+    then:
+    rehydratedClosure() == "this method"
+    ```
+* when we use `this.value` in a closure, the `this` is resolved first
+    ```
+    given:
+    def closure = {
+        methodFromDelegate(this.value)
+    }
+    
+    when:
+    def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
+    
+    then:
+    rehydratedClosure() == "fromThis"
+    ```
+* when we use `value` in a closure, the `owner` is resolved first
+    ```
+    given:
+    def closure = {
+        methodFromDelegate(value)
+    }
+    
+    when:
+    def rehydratedClosure = closure.rehydrate(new Delegate(), new Owner(), new This())
+    
+    then:
+    rehydratedClosure() == "fromOwner"
+    ```
+* when we use `value` in a closure, the `owner` is resolved first (if `value` is not found)
+then `delegate` is resolved
+    ```
+    given:
+    def closure = {
+        methodFromDelegate(value)
+    }
+    
+    when:
+    def rehydratedClosure = closure.rehydrate(new Delegate(), new EmptyOwner(), new This())
+    
+    then:
+    rehydratedClosure() == "fromDelegate"
+    ```
+
+# resolving strategies
+## summary
 * **OWNER_FIRST** - the closure will attempt 
 to resolve property references and methods to the owner first, then 
 the delegate - **this is the default strategy**.
@@ -155,3 +257,25 @@ This allows the developer to override getProperty using
 
 * **Note that local variables are always looked up first, 
 independently of the resolution strategy.**
+## tests
+Tests are in `ResolvingStrategiesTest`. They are quite straightforward.
+The most interesting is testing `Closure.TO_SELF` strategy, because
+we use `ExpandoMetaClass` to show key feature:
+```
+given:
+ExpandoMetaClass.enableGlobally()
+
+and:
+def closure = {
+    value
+}
+
+and:
+closure.metaClass.value = "inClosure"
+
+when:
+closure.resolveStrategy = Closure.TO_SELF
+
+then:
+closure() == "inClosure"
+```
