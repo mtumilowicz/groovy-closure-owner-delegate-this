@@ -32,9 +32,9 @@ key concept in Groovy closures which has no equivalent in lambdas.
 
 # Owner, delegate and this
 * **this** corresponds to the enclosing class where the closure is 
-defined,
+defined.
 * **owner** corresponds to the enclosing object where the closure is 
-defined, which may be either a class or a closure,
+defined, which may be either a class or a closure.
 * **delegate** corresponds to a third party object where methods 
 calls or properties are resolved whenever the receiver of the message 
 is not defined.
@@ -172,6 +172,8 @@ replaced with the supplied parameters.
 ```
 public Closure<V> rehydrate(Object delegate, Object owner, Object thisObject)
 ```
+
+Order and scope of loading values used in closures:
 
 * local variables are used first
     ```
