@@ -32,6 +32,58 @@ Groovy defines closures as instances of the Closure class. It makes
 it very different from lambda expressions in Java 8. Delegation is a 
 key concept in Groovy closures which has no equivalent in lambdas.
 
+# Owner, delegate and this
+* **this** corresponds to the enclosing class where the closure is 
+defined,
+* **owner** corresponds to the enclosing object where the closure is 
+defined, which may be either a class or a closure,
+* **delegate** corresponds to a third party object where methods 
+calls or properties are resolved whenever the receiver of the message 
+is not defined.
+
+## this
+* if the closure is defined in an inner class
+`this` in the closure will return the inner class, not the top-level one
+* in case of nested closures - `this` corresponds to the closest outer 
+class, not the enclosing closure!
+
+Tests are in `ThisTest`:
+* `this` inside closure
+    ```
+    given:
+    Closure closure = { this }
+    
+    expect:
+    closure() == this
+    closure().getClass() == ThisTest.class
+    ```
+* `this` inside closure inside closure
+    ```
+    given:
+    Closure closure = {
+        Closure inner = { this }
+        return inner
+    }
+    
+    expect:
+    closure()() == this
+    closure()().getClass() == ThisTest.class
+    ```
+* `this` inside closure inside inner class
+    ```
+    class InnerClass {
+        Closure inner = { this }
+    }
+    ```
+    ```
+    given:
+    def innerClass = new InnerClass()
+    
+    expect:
+    innerClass.inner() == innerClass
+    innerClass.inner().getClass() == InnerClass.class 
+    ```
+
 * **OWNER_FIRST** - the closure will attempt 
 to resolve property references and methods to the owner first, then 
 the delegate - **this is the default strategy**.
