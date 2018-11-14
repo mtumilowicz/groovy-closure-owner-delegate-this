@@ -22,7 +22,7 @@ class DelegateOwnerThisTest extends Specification {
         rehydratedClosure() == "this method"
     }
     
-    def "class This has field value, and we use this.value"() {
+    def "class This has field value, and we use this.value -> get from This"() {
         given:
         def closure = {
             methodFromDelegate(this.value)
@@ -34,7 +34,7 @@ class DelegateOwnerThisTest extends Specification {
         rehydratedClosure() == "fromThis"
     }
 
-    def "class This has field value, and we use just value"() {
+    def "class This has field value, and we use just value -> get from Owner"() {
         given:
         def closure = {
             methodFromDelegate(value)
@@ -46,7 +46,7 @@ class DelegateOwnerThisTest extends Specification {
         rehydratedClosure() == "fromOwner"
     }
 
-    def "Owner does not have field value"() {
+    def "Owner does not have field value -> get from Delegate"() {
         given:
         def closure = {
             methodFromDelegate(value)
