@@ -10,6 +10,7 @@ class ThisTest extends Specification {
         Closure closure = { this }
 
         expect:
+        closure() == this
         closure().getClass() == ThisTest.class
     }
 
@@ -21,6 +22,7 @@ class ThisTest extends Specification {
         }
 
         expect:
+        closure()() == this
         closure()().getClass() == ThisTest.class
     }
 
@@ -29,8 +31,11 @@ class ThisTest extends Specification {
     }
     
     def "closure enclosed in inner class"() {
+        given:
+        def innerClass = new InnerClass()
 
         expect:
-        new InnerClass().inner().getClass() == InnerClass.class
+        innerClass.inner() == innerClass
+        innerClass.inner().getClass() == InnerClass.class
     }
 }
