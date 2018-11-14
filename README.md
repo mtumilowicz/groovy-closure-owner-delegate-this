@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/mtumilowicz/groovy-closure-owner-delegate-this.svg?branch=master)](https://travis-ci.com/mtumilowicz/groovy-closure-owner-delegate-this)
+
 # groovy-closure-owner-delegate-this
 Groovy closures overview: owner vs delegate vs this.
 
