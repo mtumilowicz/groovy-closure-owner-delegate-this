@@ -3,7 +3,7 @@
 # groovy-closure-owner-delegate-this
 Groovy closures overview: owner vs delegate vs this.
 
-_Reference_: http://groovy-lang.org/closures.html#closure-owner
+_Reference_: http://groovy-lang.org/closures.html#closure-owner  
 
 Please refer also my other github projects about closures:
 * https://github.com/mtumilowicz/groovy-dsl
@@ -33,6 +33,9 @@ it very different from lambda expressions in Java 8. Delegation is a
 key concept in Groovy closures which has no equivalent in lambdas.
 
 # Owner, delegate and this
+_Reference_: Thanks to https://github.com/JackKarichkovskiy for
+helping me with described below intricacies.
+
 * **this** corresponds to the enclosing class where the closure is 
 defined.
 * **owner** corresponds to the enclosing object where the closure is 
